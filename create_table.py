@@ -81,9 +81,9 @@ def select_events( events, apply_exclusive=True ):
         #msk3 = ( np.array( events_sel2["InvMass"] >= 110. ) & 
         #         np.array( events_sel2["Acopl"] <= 0.009 ) & 
         #         np.array( events_sel2["nPfCand"] <= 3 ) )
-        msk3 = ( events_sel2["InvMass"] >= 110. and 
-                 events_sel2["Acopl"] <= 0.009 and 
-                 events_sel2["nExtraPfCandPV3"] <= 1 )
+        msk3 = ( np.array( events_sel2["InvMass"] >= 110. ) & 
+                 np.array( events_sel2["Acopl"] <= 0.009 ) & 
+                 np.array( events_sel2["nExtraPfCandPV3"] <= 1 ) )
         events_sel3 = events_sel2[msk3]
 
         print ( len(events), len(events_sel1), len(events_sel2), len(events_sel3) )
