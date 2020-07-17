@@ -1,0 +1,26 @@
+executable = sub_condor.csh
+
+output     = output/output_$(ProcId).out
+error      = output/output_$(ProcId).err
+log        = output/output_$(ProcId).log
+
+getenv     = True
+
+#environment = "X509_USER_PROXY=$ENV(HOME)/x509up_u61469"
+
+requirements = (OpSysAndVer =?= "CentOS7")
+
++JobFlavour = "microcentury"
+
+should_transfer_files = IF_NEEDED
+when_to_transfer_output = ON_EXIT
+transfer_output_files = ""
+
+#queue arguments from (
+#    /eos/cms/store/group/phys_pps/dilepton/DoubleMuon/UL-MiniAOD-2017/DoubleMuon_UL2017B.root UL2017B-Excl --apply_exclusive
+#    /eos/cms/store/group/phys_pps/dilepton/DoubleMuon/UL-MiniAOD-2017/DoubleMuon_UL2017B.root UL2017B-PreSel
+#)
+queue arguments from (
+    /eos/cms/store/group/phys_pps/dilepton/DoubleMuon/UL-MiniAOD-2017/DoubleMuon_UL2017C1.root UL2017C1-Excl --apply_exclusive
+    /eos/cms/store/group/phys_pps/dilepton/DoubleMuon/UL-MiniAOD-2017/DoubleMuon_UL2017C1.root UL2017C1-PreSel
+)
