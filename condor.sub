@@ -10,17 +10,24 @@ getenv     = True
 
 requirements = (OpSysAndVer =?= "CentOS7")
 
-+JobFlavour = "microcentury"
+request_memory = 16000
+
+#+JobFlavour = "longlunch"
++JobFlavour = "workday"
 
 should_transfer_files = IF_NEEDED
 when_to_transfer_output = ON_EXIT
 transfer_output_files = ""
 
-#queue arguments from (
-#    /eos/cms/store/group/phys_pps/dilepton/DoubleMuon/UL-MiniAOD-2017/DoubleMuon_UL2017B.root UL2017B-Excl --apply_exclusive
-#    /eos/cms/store/group/phys_pps/dilepton/DoubleMuon/UL-MiniAOD-2017/DoubleMuon_UL2017B.root UL2017B-PreSel
-#)
 queue arguments from (
-    /eos/cms/store/group/phys_pps/dilepton/DoubleMuon/UL-MiniAOD-2017/DoubleMuon_UL2017C1.root UL2017C1-Excl --apply_exclusive
+    #/eos/cms/store/group/phys_pps/dilepton/DoubleMuon/UL-MiniAOD-2017/DoubleMuon_UL2017B.root UL2017B-Excl --apply_exclusive
+    #/eos/cms/store/group/phys_pps/dilepton/DoubleMuon/UL-MiniAOD-2017/DoubleMuon_UL2017C1.root UL2017C1-Excl --apply_exclusive
+    #/eos/cms/store/group/phys_pps/dilepton/DoubleMuon/UL-MiniAOD-2017/DoubleMuon_UL2017B.root UL2017B-PreSel
+    #/eos/cms/store/group/phys_pps/dilepton/DoubleMuon/UL-MiniAOD-2017/DoubleMuon_UL2017B.root UL2017B-PreSel-Rnd-Res20 --random_protons --resample_factor=20
     /eos/cms/store/group/phys_pps/dilepton/DoubleMuon/UL-MiniAOD-2017/DoubleMuon_UL2017C1.root UL2017C1-PreSel
+    #/eos/cms/store/group/phys_pps/dilepton/DoubleMuon/UL-MiniAOD-2017/DoubleMuon_UL2017C1.root UL2017C1-PreSel-Rnd-Res20 --random_protons --resample_factor=20
+    #/eos/cms/store/group/phys_pps/dilepton/DoubleMuon/UL-MiniAOD-2017/DoubleMuon_UL2017D.root UL2017D-PreSel
+    #/eos/cms/store/group/phys_pps/dilepton/DoubleMuon/UL-MiniAOD-2017/DoubleMuon_UL2017D.root UL2017D-PreSel-Rnd-Res20 --random_protons --resample_factor=20
+    #/eos/cms/store/group/phys_pps/dilepton/DoubleMuon/UL-MiniAOD-2017/DoubleMuon_UL2017F1.root UL2017F1-PreSel
+    #/eos/cms/store/group/phys_pps/dilepton/DoubleMuon/UL-MiniAOD-2017/DoubleMuon_UL2017F1.root UL2017F1-PreSel-Rnd-Res20 --random_protons --resample_factor=20
 )
