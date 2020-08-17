@@ -17,6 +17,7 @@ parser.add_argument('--label', help = 'Label suffix' )
 parser.add_argument('--apply_exclusive', dest = 'apply_exclusive', action = 'store_true', required = False, help = '' )
 parser.add_argument('--random_protons', dest = 'random_protons', action = 'store_true', required = False, help = '' )
 parser.add_argument('--resample_factor', dest = 'resample_factor', type = int, required = False, default = -1, help = '' )
+parser.add_argument('-s', '--start', dest = 'start', type = int, required = False, default = -1, help = 'First event to process' )
 parser.add_argument('-n', '--events', dest = 'events', type = int, required = False, default = -1, help = 'Number of events to process' )
 #parser.add_argument('-v', '--verbose', action = 'store_true', dest = 'verbose', required = False, help = 'Enable verbose' )
 args = parser.parse_args()
@@ -35,12 +36,17 @@ print ( "Random protons: {}".format( random_protons_ ) )
 resample_factor_ = -1
 if hasattr( args, 'resample_factor'): resample_factor_ = args.resample_factor
 print ( "Resample factor: {}".format( resample_factor_ ) )
+firstEvent_ = None
+if hasattr( args, 'start' ) and args.start > 0: firstEvent_ = args.start
+print ( "First event to process: {}".format( "All" if firstEvent_ is None else firstEvent_ ) )
 maxEvents_ = None
 if hasattr( args, 'events' ) and args.events > 0: maxEvents_ = args.events
 print ( "Number of events to process: {}".format( "All" if maxEvents_ is None else maxEvents_ ) )
 
 resample_ = False
 if resample_factor_ > 1: resample_ = True
+
+entrystop_ = maxEvents_ if firstEvent_ is None else ( firstEvent_ + maxEvents_ )
 
 np.random.seed( 42 )
 
@@ -97,7 +103,7 @@ for file_ in fileNames_:
     keys.extend( tree_.keys( filter_name="ProtCand*" ) )  
     print ( keys )
     
-    for events_ in tree_.iterate( keys , library="ak", how="zip", step_size="150 MB", entry_stop=maxEvents_ ):
+    for events_ in tree_.iterate( keys , library="ak", how="zip", step_size="150 MB", entry_start=firstEvent_, entry_stop=entrystop_ ):
         print ( len(events_), events_ )
         
         #events_sel_ = select_events( events_, apply_exclusive_ )
