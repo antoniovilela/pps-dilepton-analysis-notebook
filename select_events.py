@@ -5,7 +5,7 @@ import pandas as pd
 import numba as nb
 import scipy.constants
 
-def select_events( events, apply_exclusive=True ):
+def select_events( events, minPt1=50.0, minPt2=50.0, apply_exclusive=False ):
 
     selections_ = []
     counts_ = []
@@ -54,7 +54,10 @@ def select_events( events, apply_exclusive=True ):
                     ]
     events_2muons[ "nExtraPfCandPV3" ] = ak.num( pfCands_sel3_ )
     
-    msk_muon = ( np.array( events_2muons.MuonCand.pt[:,0] >= 50. ) & np.array( events_2muons.MuonCand.pt[:,1] >= 50. ) &
+    primVertexCands_ = events_2muons.PrimVertexCand
+    events_2muons[ "nVertices" ] = ak.num( primVertexCands_ )
+
+    msk_muon = ( np.array( events_2muons.MuonCand.pt[:,0] >= minPt1 ) & np.array( events_2muons.MuonCand.pt[:,1] >= minPt2 ) &
                  np.array( events_2muons.MuonCand.istight[:,0] == 1 ) & np.array( events_2muons.MuonCand.istight[:,1] == 1 ) &
                  np.array( ( events_2muons.MuonCand.charge[:,0] * events_2muons.MuonCand.charge[:,1] ) == -1 ) )
     selections_.append( "Muon" )
@@ -85,7 +88,9 @@ def select_events( events, apply_exclusive=True ):
     
     return ( events_sel, selections_, counts_ )
         
-def select_protons(events, branchName="ProtCand"):
+def select_protons(events, branchName="ProtCand", apply_doublearm=False, version="V1"):
+
+    debug_ = False
 
     protons_ = events[ branchName ]
 
@@ -93,6 +98,7 @@ def select_protons(events, branchName="ProtCand"):
     protons_["LumiSection"] = events[ "LumiSection" ]
     protons_["BX"] = events[ "BX" ]
     protons_["EventNum"] = events[ "EventNum" ]
+    protons_["Slice"] = events[ "Slice" ]
     
     protons_["CrossingAngle"] = events[ "CrossingAngle" ]
     
@@ -105,6 +111,7 @@ def select_protons(events, branchName="ProtCand"):
     protons_["Muon1Phi"] = events.MuonCand.phi[:,1]
     protons_["Muon1VtxZ"] = events.MuonCand.vtxz[:,1]
 
+    protons_["nVertices"] = events[ "nVertices" ]
     protons_["PrimVertexZ"] = events.PrimVertexCand.z[:,0]
     
     protons_["InvMass"] = events[ "InvMass" ]
@@ -113,10 +120,42 @@ def select_protons(events, branchName="ProtCand"):
 
     protons_["XiMuMuPlus"] = events[ "XiMuMuPlus" ]
     protons_["XiMuMuMinus"] = events[ "XiMuMuMinus" ]
+ 
+    if version == "V1":
+        msk_num_prot = ( ak.num( protons_ ) > 0 )
+        protons_ = protons_[ msk_num_prot ]
+        return protons_
+    elif version == "V2":
+        protons_singleRP_ = protons_[ protons_.ismultirp == 0 ]
+        protons_multiRP_ = protons_[ protons_.ismultirp == 1 ]
     
-    msk_num_prot = ( ak.num( protons_.xi ) > 0 )
-    protons_ = protons_[ msk_num_prot ]
+    #    protons_singleRP_byRP_ = {}
+        protons_multiRP_byArm_ = {}
+    #    for rpid in ( 3, 23, 103, 123 ):
+    #        protons_singleRP_byRP_[ rpid ] =  protons_singleRP_[ protons_singleRP_.rpid == rpid ]
+    #        ppstracks_byRP_[ rpid ] = ppstracks_[ ppstracks_.rpid == rpid ]
+    #
+    #        print ( "\nNum protons RP {}: {}".format( rpid, ak.num( protons_singleRP_byRP_[ rpid ] ) ) )
+    #        if debug_:
+    #            print ( ak.to_list( protons_singleRP_byRP_[ rpid ] ) )
+    #            print ("\n")
+    #            print ( ak.to_list( ppstracks_byRP_[ rpid ] ) )
     
-    #print ( len(protons_) )
+        for arm in ( 0, 1 ):
+            protons_multiRP_byArm_[ arm ] = protons_multiRP_[ protons_multiRP_.arm == arm ]
     
-    return protons_
+            print ( "Num multi-RP protons Arm {}: {}".format( arm, ak.num( protons_multiRP_byArm_[ arm ] ) ) )
+            if debug_:
+                print ( ak.to_list( protons_multiRP_byArm_[ arm ] ) )
+    
+    #    msk_  =  np.array( ak.num( protons_singleRP_byRP_[ 3 ].xi ) == 1 )
+    #    msk_ &= np.array( ak.num( protons_singleRP_byRP_[ 23 ].xi ) == 1 )
+    #    msk_ &= np.array( ak.num( protons_singleRP_byRP_[ 103 ].xi ) == 1 )
+    #    msk_ &= np.array( ak.num( protons_singleRP_byRP_[ 123 ].xi ) == 1 )    
+    
+        msk_  = np.array( ak.num( protons_multiRP_byArm_[ 0 ] ) > 0 )
+        msk_ &= np.array( ak.num( protons_multiRP_byArm_[ 1 ] ) > 0 )
+    
+        protons_multiRP_ = protons_multiRP_[ msk_ ]
+        protons_singleRP_ = protons_singleRP_[ msk_ ]
+        return ( protons_multiRP_, protons_singleRP_ )
