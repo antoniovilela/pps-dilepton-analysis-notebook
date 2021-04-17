@@ -1,0 +1,27 @@
+executable = sub_condor_bdt_training.csh
+
+output     = output/output_bdt_training_$(ClusterId)_$(ProcId).out
+error      = output/output_bdt_training_$(ClusterId)_$(ProcId).err
+log        = output/output_bdt_training_$(ClusterId)_$(ProcId).log
+
+getenv     = True
+
+#environment = "X509_USER_PROXY=$ENV(HOME)/x509up_u61469"
+
+requirements = (OpSysAndVer =?= "CentOS7")
+
+#request_memory = 16000
+request_memory = 32000
+#request_memory = 48000
+
+RequestCpus = 24
+
+#+JobFlavour = "longlunch"
+#+JobFlavour = "workday"
++JobFlavour = "tomorrow"
+
+should_transfer_files = IF_NEEDED
+when_to_transfer_output = ON_EXIT
+transfer_output_files = ""
+
+queue
