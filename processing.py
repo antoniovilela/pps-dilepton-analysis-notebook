@@ -14,6 +14,19 @@ run_ranges_periods[ "2017F2" ] = (305178,305902)
 run_ranges_periods[ "2017F3" ] = (305965,306462)
 df_run_ranges = pd.DataFrame( run_ranges_periods, index=("min","max") ).transpose()
 
+# aperture_period_map = {
+#     "2016_preTS2"  : "2016_preTS2",
+#     "2016_postTS2" : "2016_postTS2",
+#     "2017B"        : "2017_preTS2",
+#     "2017C1"       : "2017_preTS2",
+#     "2017C2"       : "2017_preTS2",
+#     "2017D"        : "2017_preTS2",
+#     "2017E"        : "2017_postTS2",
+#     "2017F1"       : "2017_postTS2",
+#     "2017F2"       : "2017_postTS2",
+#     "2017F3"       : "2017_postTS2",
+#     "2018"         : "2018"
+# }
 aperture_period_map = {
     "2016_preTS2"  : "2016_preTS2",
     "2016_postTS2" : "2016_postTS2",
@@ -25,7 +38,30 @@ aperture_period_map = {
     "2017F1"       : "2017_postTS2",
     "2017F2"       : "2017_postTS2",
     "2017F3"       : "2017_postTS2",
-    "2018"         : "2018"
+    "2018A"        : "2018",
+    "2018B1"       : "2018",
+    "2018B2"       : "2018",
+    "2018C"        : "2018",
+    "2018D1"       : "2018",
+    "2018D2"       : "2018"
+}
+reco_period_map = {
+    "2016_preTS2"  : "2016_preTS2",
+    "2016_postTS2" : "2016_postTS2",
+    "2017B"        : "2017_preTS2",
+    "2017C1"       : "2017_preTS2",
+    "2017C2"       : "2017_preTS2",
+    "2017D"        : "2017_preTS2",
+    "2017E"        : "2017_postTS2",
+    "2017F1"       : "2017_postTS2",
+    "2017F2"       : "2017_postTS2",
+    "2017F3"       : "2017_postTS2",
+    "2018A"        : "2018_preTS1",
+    "2018B1"       : "2018_TS1_TS2",
+    "2018B2"       : "2018_TS1_TS2",
+    "2018C"        : "2018_TS1_TS2",
+    "2018D1"       : "2018_postTS2",
+    "2018D2"       : "2018_postTS2"
 }
 
 # Fiducial cuts (UL)
