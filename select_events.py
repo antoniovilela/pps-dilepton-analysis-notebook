@@ -1,5 +1,5 @@
-import uproot4
-import awkward1 as ak
+import uproot
+import awkward as ak
 import numpy as np
 import pandas as pd
 import numba as nb

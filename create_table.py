@@ -1,5 +1,5 @@
-import uproot4
-import awkward1 as ak
+import uproot
+import awkward as ak
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -176,7 +176,7 @@ with h5py.File( 'output-' + label_ + '.h5', 'w') as f:
 
     for file_ in fileNames_:
         print ( file_ ) 
-        root_ = uproot4.open( file_ )
+        root_ = uproot.open( file_ )
 
         print ( "Number of events in tree: {}".format( np.array( root_["ggll_miniaod/ntp1/nMuonCand"] ).size ) )
 
