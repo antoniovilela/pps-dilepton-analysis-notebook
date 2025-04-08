@@ -5,7 +5,7 @@ import pandas as pd
 import numba as nb
 import scipy.constants
 
-def select_events( events, minPt1=50.0, minPt2=50.0, apply_exclusive=False ):
+def select_events( events, how='zip', keys=None, minPt1=50.0, minPt2=50.0, apply_exclusive=False ):
 
     selections_ = []
     counts_ = []
@@ -14,34 +14,68 @@ def select_events( events, minPt1=50.0, minPt2=50.0, apply_exclusive=False ):
     counts_.append( len( events ) )
     
     msk_2muons = ( events.nMuonCand >= 2 )
-    events_2muons = events[msk_2muons]    
+    # events_2muons = events[msk_2muons]
+    events_ = events[msk_2muons]
 
-    dphi = events_2muons.MuonCand.phi[:,0] - events_2muons.MuonCand.phi[:,1]
+    muons_ = None
+    pfCands_ = None
+    primVertexCands_ = None
+    if how == 'zip':
+        muons_ = events_.MuonCand
+        pfCands_ = events_.PfCand
+        primVertexCands_ = events_.PrimVertexCand
+    else:
+        keys_muon_   = [ k_ for k_ in keys if k_.startswith("MuonCand_") ]
+        keys_pfCand_ = [ k_ for k_ in keys if k_.startswith("PfCand_") ]
+        keys_primVertexCand_ = [ k_ for k_ in keys if k_.startswith("PrimVertexCand_") ]
+
+        arrays_muon = {}
+        for key_ in keys_muon_: arrays_muon[ key_[ len("MuonCand_") : ] ] = events_[ key_ ]
+        muons_ = ak.zip( arrays_muon )
+
+        arrays_pfCand = {}
+        for key_ in keys_pfCand_: arrays_pfCand[ key_[ len("PfCand_") : ] ] = events_[ key_ ]
+        pfCands_ = ak.zip( arrays_pfCand )
+
+        arrays_primVertexCand = {}
+        for key_ in keys_primVertexCand_: arrays_primVertexCand[ key_[ len("PrimVertexCand_") : ] ] = events_[ key_ ]
+        primVertexCands_ = ak.zip( arrays_primVertexCand )
+
+    # dphi = events_2muons.MuonCand.phi[:,0] - events_2muons.MuonCand.phi[:,1]
+    dphi = muons_.phi[:,0] - muons_.phi[:,1]
     
     dphi = np.where( dphi >=  scipy.constants.pi, dphi - 2*scipy.constants.pi, dphi)
     dphi = np.where( dphi <  -scipy.constants.pi, dphi + 2*scipy.constants.pi, dphi)
     acopl = 1. - np.abs(dphi)/scipy.constants.pi
 
-    events_2muons["Acopl"] = acopl
+    # events_2muons["Acopl"] = acopl
+    events_["Acopl"] = acopl
 
-    m1 = events_2muons.MuonCand[:,0]
-    m2 = events_2muons.MuonCand[:,1]
+    # m1 = events_2muons.MuonCand[:,0]
+    # m2 = events_2muons.MuonCand[:,1]
+    m1 = muons_[:,0]
+    m2 = muons_[:,1]
 
     invariant_mass = np.sqrt( 2*m1.pt*m2.pt*( np.cosh(m1.eta - m2.eta) - np.cos(m1.phi - m2.phi) ) )
 
-    events_2muons["InvMass"] = invariant_mass
+    # events_2muons["InvMass"] = invariant_mass
+    events_["InvMass"] = invariant_mass
 
     energy_com = 13000.
     xi_mumu_plus = (1./energy_com) * ( m1.pt*np.exp(m1.eta) + m2.pt*np.exp(m2.eta) )
     xi_mumu_minus = (1./energy_com) * ( m1.pt*np.exp(-m1.eta) + m2.pt*np.exp(-m2.eta) )
 
-    events_2muons["XiMuMuPlus"] = xi_mumu_plus
-    events_2muons["XiMuMuMinus"] = xi_mumu_minus
+    # events_2muons["XiMuMuPlus"] = xi_mumu_plus
+    # events_2muons["XiMuMuMinus"] = xi_mumu_minus
+    events_["XiMuMuPlus"] = xi_mumu_plus
+    events_["XiMuMuMinus"] = xi_mumu_minus
 
-    pfCands_ = events_2muons.PfCand
+    # pfCands_ = events_2muons.PfCand
 
-    pfCands_["dR_0"] = np.sqrt( ( pfCands_.eta - events_2muons.MuonCand.eta[:,0] )**2 + ( pfCands_.phi - events_2muons.MuonCand.phi[:,0] )**2 )
-    pfCands_["dR_1"] = np.sqrt( ( pfCands_.eta - events_2muons.MuonCand.eta[:,1] )**2 + ( pfCands_.phi - events_2muons.MuonCand.phi[:,1] )**2 )
+    # pfCands_["dR_0"] = np.sqrt( ( pfCands_.eta - events_2muons.MuonCand.eta[:,0] )**2 + ( pfCands_.phi - events_2muons.MuonCand.phi[:,0] )**2 )
+    # pfCands_["dR_1"] = np.sqrt( ( pfCands_.eta - events_2muons.MuonCand.eta[:,1] )**2 + ( pfCands_.phi - events_2muons.MuonCand.phi[:,1] )**2 )
+    pfCands_["dR_0"] = np.sqrt( ( pfCands_.eta - muons_.eta[:,0] )**2 + ( pfCands_.phi - muons_.phi[:,0] )**2 )
+    pfCands_["dR_1"] = np.sqrt( ( pfCands_.eta - muons_.eta[:,1] )**2 + ( pfCands_.phi - muons_.phi[:,1] )**2 )
 
     pfCands_sel1_ = pfCands_[
                     pfCands_.fromPV == 3.0 
@@ -52,36 +86,54 @@ def select_events( events, minPt1=50.0, minPt2=50.0, apply_exclusive=False ):
     pfCands_sel3_ = pfCands_sel2_[
                     pfCands_sel2_.dR_1 > 0.3 
                     ]
-    events_2muons[ "nExtraPfCandPV3" ] = ak.num( pfCands_sel3_ )
+    # events_2muons[ "nExtraPfCandPV3" ] = ak.num( pfCands_sel3_ )
+    events_[ "nExtraPfCandPV3" ] = ak.num( pfCands_sel3_ )
     
-    primVertexCands_ = events_2muons.PrimVertexCand
-    events_2muons[ "nVertices" ] = ak.num( primVertexCands_ )
+    # primVertexCands_ = events_2muons.PrimVertexCand
+    # events_2muons[ "nVertices" ] = ak.num( primVertexCands_ )
+    events_[ "nVertices" ] = ak.num( primVertexCands_ )
 
-    msk_muon = ( np.array( events_2muons.MuonCand.pt[:,0] >= minPt1 ) & np.array( events_2muons.MuonCand.pt[:,1] >= minPt2 ) &
-                 np.array( events_2muons.MuonCand.istight[:,0] == 1 ) & np.array( events_2muons.MuonCand.istight[:,1] == 1 ) &
-                 np.array( ( events_2muons.MuonCand.charge[:,0] * events_2muons.MuonCand.charge[:,1] ) == -1 ) )
+    # msk_muon = ( np.array( events_2muons.MuonCand.pt[:,0] >= minPt1 ) & np.array( events_2muons.MuonCand.pt[:,1] >= minPt2 ) &
+    #              np.array( events_2muons.MuonCand.istight[:,0] == 1 ) & np.array( events_2muons.MuonCand.istight[:,1] == 1 ) &
+    #              np.array( ( events_2muons.MuonCand.charge[:,0] * events_2muons.MuonCand.charge[:,1] ) == -1 ) )
+    msk_muon = ( np.array( muons_.pt[:,0] >= minPt1 ) & np.array( muons_.pt[:,1] >= minPt2 ) &
+                 np.array( muons_.istight[:,0] == 1 ) & np.array( muons_.istight[:,1] == 1 ) &
+                 np.array( ( muons_.charge[:,0] * muons_.charge[:,1] ) == -1 ) )
+
     selections_.append( "Muon" )
     counts_.append( np.sum( msk_muon ) )
     
+    # msk_vtx = msk_muon & ( 
+    #     np.array( np.abs( events_2muons.PrimVertexCand.z[:,0] ) <= 15. ) &
+    #     np.array( np.abs( events_2muons.MuonCand.vtxz[:,0] - events_2muons.PrimVertexCand.z[:,0] ) <= 0.02 ) &
+    #     np.array( np.abs( events_2muons.MuonCand.vtxz[:,1] - events_2muons.PrimVertexCand.z[:,0] ) <= 0.02 ) 
+    #     )
     msk_vtx = msk_muon & ( 
-        np.array( np.abs( events_2muons.PrimVertexCand.z[:,0] ) <= 15. ) &
-        np.array( np.abs( events_2muons.MuonCand.vtxz[:,0] - events_2muons.PrimVertexCand.z[:,0] ) <= 0.02 ) &
-        np.array( np.abs( events_2muons.MuonCand.vtxz[:,1] - events_2muons.PrimVertexCand.z[:,0] ) <= 0.02 ) 
+        np.array( np.abs( primVertexCands_.z[:,0] ) <= 15. ) &
+        np.array( np.abs( muons_.vtxz[:,0] - primVertexCands_.z[:,0] ) <= 0.02 ) &
+        np.array( np.abs( muons_.vtxz[:,1] - primVertexCands_.z[:,0] ) <= 0.02 ) 
         )
+
     selections_.append( "Vertex" )
     counts_.append( np.sum( msk_vtx ) )
     
     events_sel = None
     if apply_exclusive:
-        msk_excl = msk_vtx & ( np.array( events_2muons["InvMass"] >= 110. ) & 
-                               np.array( events_2muons["Acopl"] <= 0.009 ) & 
-                               np.array( events_2muons["nExtraPfCandPV3"] <= 1 ) )
+        # msk_excl = msk_vtx & ( np.array( events_2muons["InvMass"] >= 110. ) & 
+        #                        np.array( events_2muons["Acopl"] <= 0.009 ) & 
+        #                        np.array( events_2muons["nExtraPfCandPV3"] <= 1 ) )
+        msk_excl = msk_vtx & ( np.array( events_["InvMass"] >= 110. ) & 
+                               np.array( events_["Acopl"] <= 0.009 ) & 
+                               np.array( events_["nExtraPfCandPV3"] <= 1 ) )
+
         selections_.append( "Exclusive" )
         counts_.append( np.sum( msk_excl ) )
 
-        events_sel = events_2muons[ msk_excl ]
+        # events_sel = events_2muons[ msk_excl ]
+        events_sel = events_[ msk_excl ]
     else:
-        events_sel = events_2muons[ msk_vtx ]  
+        # events_sel = events_2muons[ msk_vtx ]  
+        events_sel = events_[ msk_vtx ]  
 
     selections_ = np.array( selections_ )
     counts_ = np.array( counts_ )
@@ -154,8 +206,12 @@ def select_protons(events, branchName="ProtCand", apply_doublearm=False, version
     #    msk_ &= np.array( ak.num( protons_singleRP_byRP_[ 123 ].xi ) == 1 )    
     
         msk_  = np.array( ak.num( protons_multiRP_byArm_[ 0 ] ) > 0 )
-        msk_ &= np.array( ak.num( protons_multiRP_byArm_[ 1 ] ) > 0 )
+        if apply_doublearm:
+            msk_ &= np.array( ak.num( protons_multiRP_byArm_[ 1 ] ) > 0 )
+        else:
+            msk_ |= np.array( ak.num( protons_multiRP_byArm_[ 1 ] ) > 0 )
     
         protons_multiRP_ = protons_multiRP_[ msk_ ]
         protons_singleRP_ = protons_singleRP_[ msk_ ]
+
         return ( protons_multiRP_, protons_singleRP_ )
