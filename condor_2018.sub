@@ -1,0 +1,43 @@
+executable = sub_condor.csh
+
+output     = output/output_$(ClusterId)_$(ProcId).out
+error      = output/output_$(ClusterId)_$(ProcId).err
+log        = output/output_$(ClusterId)_$(ProcId).log
+
+getenv     = True
+
+#environment = "X509_USER_PROXY=$ENV(HOME)/x509up_u61469"
+
+requirements = (OpSysAndVer =?= "AlmaLinux9")
+
+#request_memory = 16000
+#request_memory = 24000
+request_memory = 32000
+#request_memory = 48000
+
+# +JobFlavour = "longlunch"
+# +JobFlavour = "workday"
++JobFlavour = "tomorrow"
+
+should_transfer_files = IF_NEEDED
+when_to_transfer_output = ON_EXIT
+transfer_output_files = ""
+
+queue arguments from (
+    # Data
+    # /eos/cms/store/group/phys_pps/miguelgallo/Dilepton/2018/Muon/Data/DoubleMuon_Run2018A-UL2018_0.root test-2018A-PreSel-Pt1_30-Pt2_20_0 --min_pt_1=30.0 --min_pt_2=20.0 --version=V2
+    # /eos/cms/store/group/phys_pps/miguelgallo/Dilepton/2018/Muon/Data/DoubleMuon_Run2018A-UL2018_1.root test-2018A-PreSel-Pt1_30-Pt2_20_1 --min_pt_1=30.0 --min_pt_2=20.0 --version=V2
+    # /eos/cms/store/group/phys_pps/miguelgallo/Dilepton/2018/Muon/Data/DoubleMuon_Run2018B-UL2018.root test-2018B-PreSel-Pt1_30-Pt2_20 --min_pt_1=30.0 --min_pt_2=20.0 --version=V2
+    # /eos/cms/store/group/phys_pps/miguelgallo/Dilepton/2018/Muon/Data/DoubleMuon_Run2018C-UL2018.root test-2018C-PreSel-Pt1_30-Pt2_20 --min_pt_1=30.0 --min_pt_2=20.0 --version=V2
+    # Random protons
+    # /eos/cms/store/group/phys_pps/miguelgallo/Dilepton/2018/Muon/Data/DoubleMuon_Run2018A-UL2018_0.root test-2018A-Excl-Pt1_30-Pt2_20-random-resample_50_0_0 --min_pt_1=30.0 --min_pt_2=20.0 --apply_exclusive --version=V2 --random_protons --resample_factor=50 --read_size=200MB --start=0 --events=5000000
+    # /eos/cms/store/group/phys_pps/miguelgallo/Dilepton/2018/Muon/Data/DoubleMuon_Run2018A-UL2018_0.root test-2018A-Excl-Pt1_30-Pt2_20-random-resample_50_0_1 --min_pt_1=30.0 --min_pt_2=20.0 --apply_exclusive --version=V2 --random_protons --resample_factor=50 --read_size=200MB --start=5000000
+    # /eos/cms/store/group/phys_pps/miguelgallo/Dilepton/2018/Muon/Data/DoubleMuon_Run2018A-UL2018_1.root test-2018A-Excl-Pt1_30-Pt2_20-random-resample_50_1_0 --min_pt_1=30.0 --min_pt_2=20.0 --apply_exclusive --version=V2 --random_protons --resample_factor=50 --read_size=200MB --start=0 --events=5000000
+    # /eos/cms/store/group/phys_pps/miguelgallo/Dilepton/2018/Muon/Data/DoubleMuon_Run2018A-UL2018_1.root test-2018A-Excl-Pt1_30-Pt2_20-random-resample_50_1_1 --min_pt_1=30.0 --min_pt_2=20.0 --apply_exclusive --version=V2 --random_protons --resample_factor=50 --read_size=200MB --start=5000000 --events=5000000
+    # /eos/cms/store/group/phys_pps/miguelgallo/Dilepton/2018/Muon/Data/DoubleMuon_Run2018A-UL2018_1.root test-2018A-Excl-Pt1_30-Pt2_20-random-resample_50_1_2 --min_pt_1=30.0 --min_pt_2=20.0 --apply_exclusive --version=V2 --random_protons --resample_factor=50 --read_size=200MB --start=10000000
+    # /eos/cms/store/group/phys_pps/miguelgallo/Dilepton/2018/Muon/Data/DoubleMuon_Run2018B-UL2018.root test-2018B-Excl-Pt1_30-Pt2_20-random-resample_50_0 --min_pt_1=30.0 --min_pt_2=20.0 --apply_exclusive --version=V2 --random_protons --resample_factor=50 --read_size=200MB --start=0 --events=5000000
+    # /eos/cms/store/group/phys_pps/miguelgallo/Dilepton/2018/Muon/Data/DoubleMuon_Run2018B-UL2018.root test-2018B-Excl-Pt1_30-Pt2_20-random-resample_50_1 --min_pt_1=30.0 --min_pt_2=20.0 --apply_exclusive --version=V2 --random_protons --resample_factor=50 --read_size=200MB --start=5000000
+    # MC mix protons
+    # /eos/cms/store/group/phys_pps/miguelgallo/Dilepton/2018/Muon/MC/GGToMuMu_Pt-25_Elastic-RunIISummer20UL18.root test-GGToMuMu_Pt-25_Elastic-mix_protons-PreSel-Pt1_30-Pt2_20 2018 --min_pt_1=30.0 --min_pt_2=20.0 --version=V2 --runOnMC --mix_protons
+    # /eos/cms/store/group/phys_pps/miguelgallo/Dilepton/2018/Muon/MC/GGToMuMu_Pt-25_Inel-El-RunIISummer20UL18.root test-GGToMuMu_Pt-25_Inel-El-mix_protons-PreSel-Pt1_30-Pt2_20 2018 --min_pt_1=30.0 --min_pt_2=20.0 --version=V2 --runOnMC --mix_protons
+)
