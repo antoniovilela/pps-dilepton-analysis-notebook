@@ -5,11 +5,12 @@ data_sample = '2018'
 base_path = "output"
 output_dir = "output"
 
-labels_signals = [ "GGToMuMu_Pt-25_Elastic", "GGToMuMu_Pt-25_Inel-El" ]
+labels_signals = [ "GGToMuMu_Pt-25_Elastic", "GGToMuMu_Pt-25_Inel-El", "GGToMuMu_Pt-25_Inel-Inel" ]
 
 fileNames_signals_mix_protons = {
     'GGToMuMu_Pt-25_Elastic': [ 'output-test-GGToMuMu_Pt-25_Elastic-mix_protons-PreSel-Pt1_30-Pt2_20.h5' ],
     'GGToMuMu_Pt-25_Inel-El': [ 'output-test-GGToMuMu_Pt-25_Inel-El-mix_protons-PreSel-Pt1_30-Pt2_20.h5' ],
+    'GGToMuMu_Pt-25_Inel-Inel': [ 'output-test-GGToMuMu_Pt-25_Inel-Inel-mix_protons-PreSel-Pt1_30-Pt2_20.h5' ]
     }
 
 for key_ in fileNames_signals_mix_protons:
