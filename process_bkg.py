@@ -7,7 +7,9 @@ output_dir = "output"
 
 labels_bkg = [
     "2018A-Excl-Pt1_30-Pt2_20-random-resample_50",
-    "2018B-Excl-Pt1_30-Pt2_20-random-resample_50"
+    "2018B-Excl-Pt1_30-Pt2_20-random-resample_50",
+    "2018C-Excl-Pt1_30-Pt2_20-random-resample_50",
+    "2018D-Excl-Pt1_30-Pt2_20-random-resample_50"
     ]
 
 fileNames_bkg = {}
@@ -17,11 +19,27 @@ fileNames_bkg[ "2018A-Excl-Pt1_30-Pt2_20-random-resample_50" ] = [
     "output-test-2018A-Excl-Pt1_30-Pt2_20-random-resample_50_0_1.h5",
     "output-test-2018A-Excl-Pt1_30-Pt2_20-random-resample_50_1_0.h5",
     "output-test-2018A-Excl-Pt1_30-Pt2_20-random-resample_50_1_1.h5",
-    "output-test-2018A-Excl-Pt1_30-Pt2_20-random-resample_50_1_1.h5"
+    "output-test-2018A-Excl-Pt1_30-Pt2_20-random-resample_50_1_2.h5"
     ]
 fileNames_bkg[ "2018B-Excl-Pt1_30-Pt2_20-random-resample_50" ] = [
     "output-test-2018B-Excl-Pt1_30-Pt2_20-random-resample_50_0.h5",
     "output-test-2018B-Excl-Pt1_30-Pt2_20-random-resample_50_1.h5"
+    ]
+fileNames_bkg[ "2018C-Excl-Pt1_30-Pt2_20-random-resample_50" ] = [
+    "output-test-2018C-Excl-Pt1_30-Pt2_20-random-resample_50_0.h5",
+    "output-test-2018C-Excl-Pt1_30-Pt2_20-random-resample_50_1.h5"
+    ]
+fileNames_bkg[ "2018D-Excl-Pt1_30-Pt2_20-random-resample_50" ] = [
+    "output-test-2018D-Excl-Pt1_30-Pt2_20-random-resample_50_0_0.h5",
+    "output-test-2018D-Excl-Pt1_30-Pt2_20-random-resample_50_0_1.h5",
+    "output-test-2018D-Excl-Pt1_30-Pt2_20-random-resample_50_1_0.h5",
+    "output-test-2018D-Excl-Pt1_30-Pt2_20-random-resample_50_1_1.h5",
+    "output-test-2018D-Excl-Pt1_30-Pt2_20-random-resample_50_2_0.h5",
+    "output-test-2018D-Excl-Pt1_30-Pt2_20-random-resample_50_2_1.h5",
+    "output-test-2018D-Excl-Pt1_30-Pt2_20-random-resample_50_2_2.h5",
+    "output-test-2018D-Excl-Pt1_30-Pt2_20-random-resample_50_3_0.h5",
+    "output-test-2018D-Excl-Pt1_30-Pt2_20-random-resample_50_3_1.h5",
+    "output-test-2018D-Excl-Pt1_30-Pt2_20-random-resample_50_3_2.h5"
     ]
 
 for key_ in fileNames_bkg:

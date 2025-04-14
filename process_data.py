@@ -7,7 +7,13 @@ output_dir = "output"
 
 labels_data = [
     "2018A-PreSel-Pt1_30-Pt2_20",
-    "2018B-PreSel-Pt1_30-Pt2_20"
+    "2018B-PreSel-Pt1_30-Pt2_20",
+    "2018C-PreSel-Pt1_30-Pt2_20",
+    #"2018D-PreSel-Pt1_30-Pt2_20"
+    "2018D-PreSel-Pt1_30-Pt2_20_0",
+    "2018D-PreSel-Pt1_30-Pt2_20_1",
+    "2018D-PreSel-Pt1_30-Pt2_20_2",
+    "2018D-PreSel-Pt1_30-Pt2_20_3"
     ]
 
 fileNames_data = {}
@@ -17,6 +23,27 @@ fileNames_data[ "2018A-PreSel-Pt1_30-Pt2_20" ] = [
     ]
 fileNames_data[ "2018B-PreSel-Pt1_30-Pt2_20" ] = [
     "output-test-2018B-PreSel-Pt1_30-Pt2_20.h5"
+    ]
+fileNames_data[ "2018C-PreSel-Pt1_30-Pt2_20" ] = [
+    "output-test-2018C-PreSel-Pt1_30-Pt2_20.h5"
+    ]
+#fileNames_data[ "2018D-PreSel-Pt1_30-Pt2_20" ] = [
+#    "output-test-2018D-PreSel-Pt1_30-Pt2_20_0.h5",
+#    "output-test-2018D-PreSel-Pt1_30-Pt2_20_1.h5",
+#    "output-test-2018D-PreSel-Pt1_30-Pt2_20_2.h5",
+#    "output-test-2018D-PreSel-Pt1_30-Pt2_20_3.h5"
+#    ]
+fileNames_data[ "2018D-PreSel-Pt1_30-Pt2_20_0" ] = [
+    "output-test-2018D-PreSel-Pt1_30-Pt2_20_0.h5"
+    ]
+fileNames_data[ "2018D-PreSel-Pt1_30-Pt2_20_1" ] = [
+    "output-test-2018D-PreSel-Pt1_30-Pt2_20_1.h5"
+    ]
+fileNames_data[ "2018D-PreSel-Pt1_30-Pt2_20_2" ] = [
+    "output-test-2018D-PreSel-Pt1_30-Pt2_20_2.h5"
+    ]
+fileNames_data[ "2018D-PreSel-Pt1_30-Pt2_20_3" ] = [
+    "output-test-2018D-PreSel-Pt1_30-Pt2_20_3.h5"
     ]
 
 for key_ in fileNames_data:
