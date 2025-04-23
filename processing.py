@@ -504,7 +504,7 @@ def get_data( fileNames, selection=None, version="V1" ):
         "Run": "int64", "LumiSection": "int64", "EventNum": "int64", "Slice": "int32",
         "MultiRP": "int32", "Arm": "int32", "RPId1": "int32", "RPId2": "int32",
         "TrackPixShift_SingleRP": "int32", "Track1PixShift_MultiRP": "int32", "Track2PixShift_MultiRP": "int32",
-        "nVertices": "int32", "ExtraPfCands": "int32"
+        "nVertices": "int32", "ExtraPfCands": "int32", "random": "int32"
         }
     
     df_list = None
@@ -643,7 +643,7 @@ def get_data( fileNames, selection=None, version="V1" ):
         return ( df_counts, df_protons_multiRP, df_protons_singleRP )
 
 
-def process_data( df, data_sample, lepton_type, proton_selection, min_mass=0., min_pt_1=-1, min_pt_2=-1, apply_fiducial=True, within_aperture=False, random_protons=False, mix_protons=False, runOnMC=False, select2protons=False ):
+def process_data( df, data_sample, lepton_type, proton_selection, min_mass=0., min_pt_1=-1, min_pt_2=-1, apply_fiducial=True, within_aperture=False, random_protons=False, mix_protons=False, runOnMC=False, select2protons=False, nprot_value=3 ):
 
     if runOnMC:
         print ( "Turning within_aperture OFF for MC." )
@@ -999,9 +999,9 @@ def process_data( df, data_sample, lepton_type, proton_selection, min_mass=0., m
     if proton_selection == "MultiRP":
         if calculate_vars_pp_:
             if select2protons:
-                df_events_, df_2protons_ = process_events( data_sample, df_index, select2protons=select2protons, runOnMC=runOnMC, mix_protons=mix_protons, columns_drop=columns_drop_, use_hash_index=use_hash_index_ )
+                df_ximax_, df_events_, df_2protons_ = process_events( data_sample, df_index, select2protons=select2protons, runOnMC=runOnMC, columns_drop=columns_drop_, use_hash_index=use_hash_index_, nprot_value=nprot_value )
             else:
-                df_ximax_ = process_events( data_sample, df_index, select2protons=select2protons, runOnMC=runOnMC, mix_protons=mix_protons, columns_drop=columns_drop_, use_hash_index=use_hash_index_ )
+                df_ximax_ = process_events( data_sample, df_index, select2protons=select2protons, runOnMC=runOnMC, columns_drop=columns_drop_, use_hash_index=use_hash_index_, nprot_value=nprot_value )
         else:
             labels_xi_ = [ "_nom", "_p100", "_m100" ]
             if runOnMC:
@@ -1017,12 +1017,13 @@ def process_data( df, data_sample, lepton_type, proton_selection, min_mass=0., m
         return ( df_index )
     elif proton_selection == "MultiRP":
         if select2protons:
-            return ( df_index, df_events_, df_2protons_ )
+            return ( df_index, df_ximax_, df_events_, df_2protons_ )
         else:
             return ( df_index, df_ximax_ )
 
 
-def process_events( data_sample, df_protons_multiRP_index, select2protons = False, runOnMC=False, mix_protons=False, columns_drop=None, use_hash_index=False ):
+# def process_events( data_sample, df_protons_multiRP_index, select2protons = False, runOnMC=False, mix_protons=False, columns_drop=None, use_hash_index=False, nprot_value=3 ):
+def process_events( data_sample, df_protons_multiRP_index, select2protons = False, runOnMC=False, columns_drop=None, use_hash_index=False, nprot_value=3 ):
 
     index_vars_ = None
     if not use_hash_index:
@@ -1031,10 +1032,25 @@ def process_events( data_sample, df_protons_multiRP_index, select2protons = Fals
         index_vars_ = ['Run', 'LumiSection', 'EventNum', 'hash_id', 'Slice']
     print ( index_vars_ )
    
+    df_protons_multiRP_groupby_arm = df_protons_multiRP_index[ [ "Arm" ] ].groupby( index_vars_ )
+    df_protons_multiRP_index['nprotons_arm0'] = df_protons_multiRP_groupby_arm[ "Arm" ].transform( lambda s_: ( np.sum( s_ == 0 ) ) )
+    df_protons_multiRP_index['nprotons_arm1'] = df_protons_multiRP_groupby_arm[ "Arm" ].transform( lambda s_: ( np.sum( s_ == 1 ) ) )
+    print( df_protons_multiRP_index['nprotons_arm0'] )
+    print( df_protons_multiRP_index['nprotons_arm1'] )
+
+    msk_nprotons = None
+    if data_sample == '2017':
+        msk_nprotons = ( df_protons_multiRP_index['nprotons_arm0'] == 1 ) & ( df_protons_multiRP_index['nprotons_arm1'] == 1 )
+    elif data_sample == '2018':
+        msk_nprotons = ( df_protons_multiRP_index['nprotons_arm0'] <= nprot_value ) & ( df_protons_multiRP_index['nprotons_arm1'] <= nprot_value )
+    print ( msk_nprotons )
+    df_protons_multiRP_index_nprotons = df_protons_multiRP_index.loc[ msk_nprotons ]
+
     groupby_vars_ = index_vars_.copy()
     groupby_vars_.append( 'Arm' )
+
     df_protons_multiRP_groupby_byarm_xi_max = df_protons_multiRP_index[ [ "Arm", "Xi" ] ].groupby( groupby_vars_ )
-    msk_xi_max = df_protons_multiRP_groupby_byarm_xi_max[ "Xi" ].transform( lambda s_: ( s_ == s_.max() ) )
+    msk_xi_max = df_protons_multiRP_groupby_byarm_xi_max[ "Xi" ].transform( lambda s_: ( s_ >= s_.max() ) )
     print ( msk_xi_max )
     df_protons_multiRP_index_xi_max = df_protons_multiRP_index.loc[ msk_xi_max ]
 
@@ -1149,6 +1165,6 @@ def process_events( data_sample, df_protons_multiRP_index, select2protons = Fals
 
 
     if select2protons:
-        return ( df_protons_multiRP_events, df_protons_multiRP_index_2protons )
+        return ( df_protons_multiRP_index_xi_max, df_protons_multiRP_events, df_protons_multiRP_index_2protons )
     else:
         return df_protons_multiRP_index_xi_max

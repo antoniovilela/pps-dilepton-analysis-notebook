@@ -321,7 +321,7 @@ np.random.seed( 42 )
 
 dset_chunk_size = 200000
 
-columns = [ "Run", "LumiSection", "BX", "EventNum", "Slice", "CrossingAngle",
+columns = [ "Run", "LumiSection", "BX", "EventNum", "Slice", "CrossingAngle", "random",
             "MultiRP", "Arm", "RPId1", "RPId2", "TrackX1", "TrackY1", "TrackX2", "TrackY2",
             "Xi", "T", "ThX", "ThY", "Time",
             "TrackThX_SingleRP", "TrackThY_SingleRP",

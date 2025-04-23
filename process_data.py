@@ -2,21 +2,33 @@ from processing import *
 
 lepton_type = "muon"
 data_sample = '2018'
+nprot_value = 3
 base_path = "output"
 output_dir = "output"
 
+# labels_data = [
+#     "2018A-PreSel-Pt1_30-Pt2_20",
+#     "2018B-PreSel-Pt1_30-Pt2_20"
+#     ]
 labels_data = [
-    "2018A-PreSel-Pt1_30-Pt2_20",
-    "2018B-PreSel-Pt1_30-Pt2_20"
+    "2018A-Excl-Pt1_30-Pt2_20",
+    "2018B-Excl-Pt1_30-Pt2_20"
     ]
 
 fileNames_data = {}
-fileNames_data[ "2018A-PreSel-Pt1_30-Pt2_20" ] = [
-    "output-test-2018A-PreSel-Pt1_30-Pt2_20_0.h5",
-    "output-test-2018A-PreSel-Pt1_30-Pt2_20_1.h5"
+# fileNames_data[ "2018A-PreSel-Pt1_30-Pt2_20" ] = [
+#     "output-test-2018A-PreSel-Pt1_30-Pt2_20_0.h5",
+#     "output-test-2018A-PreSel-Pt1_30-Pt2_20_1.h5"
+#     ]
+# fileNames_data[ "2018B-PreSel-Pt1_30-Pt2_20" ] = [
+#     "output-test-2018B-PreSel-Pt1_30-Pt2_20.h5"
+#     ]
+fileNames_data[ "2018A-Excl-Pt1_30-Pt2_20" ] = [
+    "output-test-2018A-Excl-Pt1_30-Pt2_20_0.h5",
+    "output-test-2018A-Excl-Pt1_30-Pt2_20_1.h5"
     ]
-fileNames_data[ "2018B-PreSel-Pt1_30-Pt2_20" ] = [
-    "output-test-2018B-PreSel-Pt1_30-Pt2_20.h5"
+fileNames_data[ "2018B-Excl-Pt1_30-Pt2_20" ] = [
+    "output-test-2018B-Excl-Pt1_30-Pt2_20.h5"
     ]
 
 for key_ in fileNames_data:
@@ -39,7 +51,7 @@ for label_ in labels_data:
     print ( file_path_ )
     with pd.HDFStore( file_path_, 'w', complevel=5 ) as store_:
         df_counts_, df_protons_multiRP_, df_protons_singleRP_ = get_data( fileNames_data[ label_ ], version='V2' )
-        df_protons_multiRP_index_, df_protons_multiRP_events_, df_protons_multiRP_2protons_ = process_data(
+        df_protons_multiRP_index_, df_protons_multiRP_index_xi_max_, df_protons_multiRP_events_, df_protons_multiRP_2protons_ = process_data(
             df_protons_multiRP_,
             data_sample=data_sample,
             lepton_type=lepton_type,
@@ -49,12 +61,15 @@ for label_ in labels_data:
             random_protons=False,
             mix_protons=False,
             runOnMC=False,
-            select2protons=True
+            select2protons=True,
+            nprot_value=nprot_value
             )
 
         print ( df_protons_multiRP_2protons_ )
+        print ( df_protons_multiRP_index_xi_max_ )
         store_[ "counts" ] = df_counts_
         store_[ "protons_multiRP"] = df_protons_multiRP_index_
+        store_[ "protons_xiMax_multiRP"] = df_protons_multiRP_index_xi_max_
         store_[ "events_multiRP" ] = df_protons_multiRP_events_
             
     time_e_ = time.time()

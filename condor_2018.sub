@@ -38,6 +38,7 @@ queue arguments from (
     # /eos/cms/store/group/phys_pps/miguelgallo/Dilepton/2018/Muon/Data/DoubleMuon_Run2018B-UL2018.root test-2018B-Excl-Pt1_30-Pt2_20-random-resample_50_0 --min_pt_1=30.0 --min_pt_2=20.0 --apply_exclusive --version=V2 --random_protons --resample_factor=50 --read_size=200MB --start=0 --events=5000000
     # /eos/cms/store/group/phys_pps/miguelgallo/Dilepton/2018/Muon/Data/DoubleMuon_Run2018B-UL2018.root test-2018B-Excl-Pt1_30-Pt2_20-random-resample_50_1 --min_pt_1=30.0 --min_pt_2=20.0 --apply_exclusive --version=V2 --random_protons --resample_factor=50 --read_size=200MB --start=5000000
     # MC mix protons
-    # /eos/cms/store/group/phys_pps/miguelgallo/Dilepton/2018/Muon/MC/GGToMuMu_Pt-25_Elastic-RunIISummer20UL18.root test-GGToMuMu_Pt-25_Elastic-mix_protons-PreSel-Pt1_30-Pt2_20 2018 --min_pt_1=30.0 --min_pt_2=20.0 --version=V2 --runOnMC --mix_protons
-    # /eos/cms/store/group/phys_pps/miguelgallo/Dilepton/2018/Muon/MC/GGToMuMu_Pt-25_Inel-El-RunIISummer20UL18.root test-GGToMuMu_Pt-25_Inel-El-mix_protons-PreSel-Pt1_30-Pt2_20 2018 --min_pt_1=30.0 --min_pt_2=20.0 --version=V2 --runOnMC --mix_protons
+    /eos/cms/store/group/phys_pps/miguelgallo/Dilepton/2018/Muon/MC/GGToMuMu_Pt-25_Elastic-RunIISummer20UL18_new.root test-GGToMuMu_Pt-25_Elastic-mix_protons-PreSel-Pt1_30-Pt2_20 2018 --min_pt_1=30.0 --min_pt_2=20.0 --version=V2 --runOnMC --mix_protons
+    /eos/cms/store/group/phys_pps/miguelgallo/Dilepton/2018/Muon/MC/GGToMuMu_Pt-25_Inel-El-RunIISummer20UL18_new.root test-GGToMuMu_Pt-25_Inel-El-mix_protons-PreSel-Pt1_30-Pt2_20 2018 --min_pt_1=30.0 --min_pt_2=20.0 --version=V2 --runOnMC --mix_protons
+    /eos/cms/store/group/phys_pps/miguelgallo/Dilepton/2018/Muon/MC/GGToMuMu_Pt-25_Inel-Inel-RunIISummer20UL18_new.root test-GGToMuMu_Pt-25_Inel-Inel-mix_protons-PreSel-Pt1_30-Pt2_20 2018 --min_pt_1=30.0 --min_pt_2=20.0 --version=V2 --runOnMC --mix_protons
 )
